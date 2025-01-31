@@ -1,0 +1,59 @@
+ // This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id      Int      @id @default(autoincrement()) 
+  email        String   @unique
+  password     String
+  first_name   String
+  last_name    String
+  phone_number String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  rides        Ride[]
+
+  @@map("users")
+}
+
+model Ride {
+  ride_id         Int        @id @default(autoincrement())
+  pickup_location String
+  dropoff_location String
+  car_type        CarType
+  fare            Float
+  status          RideStatus @default(PENDING)
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
+  user            User       @relation(fields: [user_id], references: [user_id])
+  user_id         Int
+
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at])
+  @@map("rides")
+}
+
+enum CarType {
+  STANDARD
+  PREMIUM
+  LUXURY
+}
+
+enum RideStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
