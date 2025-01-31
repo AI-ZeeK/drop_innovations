@@ -232,7 +232,6 @@ export class RideService {
         RideStatus.CANCELLED,
       ];
 
-      // Check if user exists
       const user = await this.prisma.user.findUnique({
         where: { user_id },
       });
@@ -243,7 +242,6 @@ export class RideService {
 
       const rides: any[] = [];
 
-      // Generate 10 random rides
       for (let i = 0; i < 10; i++) {
         let pickup, dropoff;
         do {
@@ -254,8 +252,6 @@ export class RideService {
         const carType = carTypes[Math.floor(Math.random() * carTypes.length)];
         const status = statuses[Math.floor(Math.random() * statuses.length)];
         const fare = this.calculateFare(carType, this.FIXED_DISTANCE_KM);
-
-        // Create ride with random date within last 30 days
         const date = new Date();
         date.setDate(date.getDate() - Math.floor(Math.random() * 30));
 
